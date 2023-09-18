@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import close from "../assets/images/icons/icon-close.png"
 import image1 from "../assets/images/product-11.jpg"
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const ProductModel = ({ isOpen, closeModal, product }) => {
     const [quantity, setQuantity] = useState(1);
@@ -33,7 +34,7 @@ const ProductModel = ({ isOpen, closeModal, product }) => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
 
         // Optionally, you can display a confirmation message to the user
-        alert(`${quantity} ${product.name}(s) added to cart!`);
+        toast.success(`${quantity} ${product.name}(s) added to cart!`)
         closeModal()
     };
 
@@ -59,7 +60,7 @@ const ProductModel = ({ isOpen, closeModal, product }) => {
                                             <div className="item-slick3" data-thumb={image1}>
                                                 <div className="wrap-pic-w pos-relative">
                                                     <img
-                                                        src={image1}
+                                                        src={product.image ? `http://localhost:3303/images/${product.image}` : image1}
                                                         alt="IMG-PRODUCT"
                                                         style={{ maxWidth: "100%" }} // Set a maximum width for the image
                                                     />

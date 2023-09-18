@@ -17,8 +17,6 @@ const FilterCategory = ({ categories }) => {
 
 FilterCategory.propTypes = {
     categories: PropTypes.array.isRequired,
-    selectedCategory: PropTypes.string.isRequired,
-    setSelectedCategory: PropTypes.func.isRequired,
 };
 
 

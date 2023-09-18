@@ -14,8 +14,9 @@ const ProductList = () => {
     const [products, setProducts] = useState([])
 
     useEffect(() => {
-        axiosInstanse.get('/products').then((res) => {
-            setProducts(res.data)
+        axiosInstanse.get(`/products/1/4`).then((res) => {
+            console.log(res.data.products)
+            setProducts(res.data.products)
         })
     }, [categories])
 

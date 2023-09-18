@@ -1,36 +1,77 @@
-import heart1 from "../../assets/images/icons/icon-heart-01.png"
-import heart2 from "../../assets/images/icons/icon-heart-02.png"
-import image from "../../assets/images/product-02.jpg"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react"
+import useAxios from "../../hooks/axios"
+import FilterProducts from "./components/products"
+
 const ProductStore = () => {
+
+    const axiosInstance = useAxios()
+
+    const [categories, setCategories] = useState([])
+    const [products, setProducts] = useState([])
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
+    const fetchProducts = () => {
+        if(selectedCategory)
+        {
+            axiosInstance.get(`/products/${selectedCategory}/${currentPage}/12`).then((res) => {
+                setProducts(res.data.products)
+            })
+        }
+        else{
+            axiosInstance.get(`/products/${currentPage}/12`).then((res) => {
+                setProducts(res.data.products)
+            })
+        }
+    }
+
+    useEffect(() => {
+        fetchProducts()
+    }, [categories])
+
+    useEffect(() => {
+        axiosInstance.get('/category').then((res) => {
+            setCategories(res.data)
+        })
+    }, [])
+
+    const loadMoreProducts = () => {
+        setCurrentPage(currentPage + 1);
+        if(selectedCategory)
+        {
+            axiosInstance.get(`/products/${selectedCategory}/${currentPage}/12`).then((res) => {
+                setProducts((prevProducts) => [...prevProducts, ...res.data.products]);
+            })
+        }
+        else
+        {
+            axiosInstance.get(`/products/${currentPage}/12`).then((res) => {
+                setProducts((prevProducts) => [...prevProducts, ...res.data.products]);
+            })
+        }
+    };
+
+    const handleCategoryClick = (category) => {
+        // Update the selected category and reset the current page
+        setSelectedCategory(category);
+        setCurrentPage(1);
+        fetchProducts()
+    };
+
     return (
         <div>
             <div className="bg0 m-t-23 p-b-140">
                 <div className="container">
                     <div className="flex-w flex-sb-m p-b-52">
                         <div className="flex-w flex-l-m filter-tope-group m-tb-10">
-                            <button className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-                                All Products
-                            </button>
-
-                            <button className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-                                Women
-                            </button>
-
-                            <button className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-                                Men
-                            </button>
-
-                            <button className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
-                                Bag
-                            </button>
-
-                            <button className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
-                                Shoes
-                            </button>
-
-                            <button className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-                                Watches
-                            </button>
+                            {categories.map((category) => {
+                                return (
+                                    <button onClick={() => handleCategoryClick(category._id)} key={category._id} className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="*">
+                                        {category.name}
+                                    </button>
+                                )
+                            })}
                         </div>
 
                         <div className="flex-w flex-c-m m-tb-10">
@@ -249,521 +290,13 @@ const ProductStore = () => {
                     </div>
 
                     <div className="row isotope-grid">
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+                        <div className="col-sm-6 col-md-4 col-lg-12 p-b-35 isotope-item women">
                             {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Esprit Ruffle Shirt
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $16.64
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Herschel supply
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $35.31
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item men">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Only Check Trouser
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $25.50
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Classic Trench Coat
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $75.00
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Front Pocket Jumper
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $34.75
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item watches">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Vintage Inspired Classic
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $93.20
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Shirt in Stretch Cotton
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $52.66
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Pieces Metallic Printed
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $18.96
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item shoes">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Converse All Star Hi Plimsolls
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $75.00
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Femme T-Shirt In Stripe
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $25.85
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item men">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Herschel supply
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $63.16
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item men">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Herschel supply
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $63.15
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            T-Shirt with Sleeve
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $18.49
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Pretty Little Thing
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $54.79
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item watches">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Mini Silver Mesh Watch
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $86.85
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-                            {/* <!-- Block2 --> */}
-                            <div className="block2">
-                                <div className="block2-pic hov-img0">
-                                    <img src={image} alt="IMG-PRODUCT" />
-
-                                    <a href="/" className="block2-btn flex-c-m cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-
-                                <div className="block2-txt flex-w flex-t p-t-14">
-                                    <div className="block2-txt-child1 flex-col-l ">
-                                        <a href="product-detail.html" className=" cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            Square Neck Back
-                                        </a>
-
-                                        <span className=" cl3">
-                                            $29.64
-                                        </span>
-                                    </div>
-
-                                    <div className="block2-txt-child2 flex-r p-t-3">
-                                        <a href="/" className="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img className="icon-heart1 dis-block trans-04" src={heart1} alt="ICON" />
-                                            <img className="icon-heart2 dis-block trans-04 ab-t-l" src={heart2} alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            <FilterProducts products={products}/>
                         </div>
                     </div>
-
                     <div className="flex-c-m flex-w w-full p-t-45">
-                        <a href="/" className="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+                        <a onClick={loadMoreProducts} className="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
                             Load More
                         </a>
                     </div>

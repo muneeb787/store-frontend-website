@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import ProductModel from '../../../../components/model';
-import useAxios from '../../../../hooks/axios';
-import favt from '../../../../assets/images/icons/icon-heart-01.png';
-import favt1 from '../../../../assets/images/icons/icon-heart-02.png';
-import image from '../../../../assets/images/product-11.jpg';
+import ProductModel from '../../../components/model';
+import useAxios from '../../../hooks/axios';
+import favt from '../../../assets/images/icons/icon-heart-01.png';
+import favt1 from '../../../assets/images/icons/icon-heart-02.png';
+import image from '../../../assets/images/product-11.jpg';
 
 const FilterProducts = ({ products }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
