@@ -5,7 +5,6 @@ import ProductStore from "../pages/Store/store";
 import WishList from "../pages/WishList/wishList";
 import ShoppingCart from "../pages/shoppingCart/shopingCart";
 
-
 export const PageRoutes = [
     {
         title: "404",
