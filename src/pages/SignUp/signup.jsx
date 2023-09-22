@@ -51,8 +51,12 @@ const Signup = () => {
         },
     });
 
+    useEffect(() => {
+        if (localStorage.getItem('token') && localStorage.getItem('token') != "undefined" ) {
+            navigate('/')
+        }
+    }, [])
 
-    const { touched, errors, values } = formik;
 
     return (
         <div>

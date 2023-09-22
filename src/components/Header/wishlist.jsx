@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import image from "../../assets/images/product-04.jpg"
+import { toast } from 'react-toastify';
 
 const WishListMenu = ({ isOpen, closeCart }) => {
     const [wishListItems, setWishListItems] = useState([]);
@@ -10,6 +12,14 @@ const WishListMenu = ({ isOpen, closeCart }) => {
         const existingWishList = JSON.parse(localStorage.getItem('WishList')) || [];
         setWishListItems(existingWishList);
     }, []);
+
+    const handleDeleteItem = (index) => {
+        const updatedCartItems = [...wishListItems];
+        updatedCartItems.splice(index, 1); // Remove the item at the specified index
+        setWishListItems(updatedCartItems);
+        localStorage.setItem("WishList", JSON.stringify(updatedCartItems));
+        toast.success("Item removed from WishList");
+    };
 
     return (
         <div>
@@ -29,16 +39,16 @@ const WishListMenu = ({ isOpen, closeCart }) => {
                         <ul className="header-cart-wrapitem w-full">
                             {wishListItems.map((item, index) => (
                                 <li key={index} className="header-cart-item flex-w flex-t m-b-12">
-                                    <div className="header-cart-item-img">
-                                        <img src={item.image} alt={item.name} />
+                                    <div onClick={() => handleDeleteItem(index)} className="header-cart-item-img">
+                                        <img src={item.image ? `http://localhost:3303/images/${item.image}` : image} alt={item.name} />
                                     </div>
 
                                     <div className="header-cart-item-txt p-t-8">
-                                        <a href="#" className="header-cart-item-name m-b-18 hov-cl1 trans-04">
+                                        <a href="#" className="poppins header-cart-item-name m-b-18 hov-cl1 trans-04">
                                             {item.name}
                                         </a>
 
-                                        <span className="header-cart-item-info">
+                                        <span className="poppins header-cart-item-info">
                                             ${item.price.toFixed(2)}
                                         </span>
                                     </div>
@@ -50,7 +60,7 @@ const WishListMenu = ({ isOpen, closeCart }) => {
                             <div className="header-cart-buttons flex-w w-full">
                                 <a onClick={()=>{
                                     closeCart()
-                                    navigate("/wishlist")}} className="text-white flex-c-m cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+                                    navigate("/wishlist")}} className="text-white poppins flex-c-m cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
                                     View WishList
                                 </a>
                             </div>

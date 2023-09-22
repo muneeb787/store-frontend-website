@@ -1,5 +1,5 @@
 import { FormikProvider, useFormik, Field } from 'formik';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'Yup'
 import UseAxios from '../../hooks/axios';
 import { toast } from 'react-toastify';
@@ -14,11 +14,11 @@ const Login = () => {
 
     const navigate = useNavigate()
 
-    // useEffect(() => {
-    //     if (localStorage.getItem('token') && localStorage.getItem('token') != "undefined" ) {
-    //         navigate('/dashboard')
-    //     }
-    // }, [])
+    useEffect(() => {
+        if (localStorage.getItem('token') && localStorage.getItem('token') != "undefined" ) {
+            navigate('/')
+        }
+    }, [])
 
     const formik = useFormik({
         initialValues: {
@@ -44,8 +44,6 @@ const Login = () => {
                 })
         }
     })
-
-    const { touched, errors, values } = formik;
 
 
     return (
