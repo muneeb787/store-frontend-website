@@ -1,14 +1,22 @@
+import {Field, FormikProvider, useFormik } from "formik";
+// import {   FormikProvider } from "formik";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import useAxios from "../../hooks/axios";
+
+// import { useNavigate } from "react-router-dom";
+
 const ShoppingCart = () => {
 
+    // const {user_id}=req.user;
+    const axiosInstance=useAxios();
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
         // Retrieve cart items from localStorage
         const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        setCartItems(storedCartItems);
+        setCartItems(storedCartItems);    //
         updateTotalPrice(storedCartItems);
     }, []);
 
@@ -16,7 +24,7 @@ const ShoppingCart = () => {
         const totalPrice = items.reduce((total, item) => {
             return total + item.quantity * item.price;
         }, 0);
-        setTotalPrice(totalPrice);
+        setTotalPrice(totalPrice);   //
     };
 
     const handleQuantityChange = (index, increment) => {
@@ -26,9 +34,9 @@ const ShoppingCart = () => {
         } else if (updatedCartItems[index].quantity > 1) {
             updatedCartItems[index].quantity -= 1;
         }
-        setCartItems(updatedCartItems);
+        setCartItems(updatedCartItems); //
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
-        updateTotalPrice(updatedCartItems);
+        updateTotalPrice(updatedCartItems);  //
     };
 
     const handleUpdateCart = () => {
@@ -37,9 +45,74 @@ const ShoppingCart = () => {
         toast.success(`Cart updated`);
     };
 
+
+    const [shipping_address, setShipping_address] = useState(
+        {
+        country: "",
+        street: "",
+        state:"",
+        city:"",
+        postal_code:""
+      });
+
+      const handleOnChange = (e) =>{ 
+        const name=e.target.name;
+        const value=e.target.value;
+
+        setShipping_address ({...shipping_address, [name]: value})
+    };
+
+    
+    const [records, setRecords] = useState({});
+
+    const handleSubmit= (e) => {
+        e.preventDefault();
+        setRecords("")
+        console.log(shipping_address, "Shipping")
+        setRecords({shipping_address});
+        console.log(records , "record 1");
+
+        const products = cartItems.map((elem)=>{
+        return{
+            id: elem.id,
+            Order_Quantity : elem.quantity,
+            total_price : elem.price * elem.quantity
+        }
+    })
+        
+        setRecords({...records , totalPrice})
+        // setRecords({...records , products : products})
+
+        console.log(records);
+
+        // setShipping_address({
+        //   country: "",
+        //   street: "",
+        //   state:"",
+        //   city:"",
+        //   postal_code:""
+        // });
+
+        axiosInstance.post('/order', records)
+        .then((response) => {
+
+          console.log('Form submitted successfully:', response.data);
+          toast.success("Product Created successfully");
+        })
+        .catch((error) => {
+          console.error('Error submitting form:', error);
+          toast.error("Error creating product");
+        })
+        .finally(()=>{
+        });
+
+
+    }
+
     return (
         <div>
-            <form className="bg0 p-t-75 p-b-85 poppins">
+        <FormikProvider>
+            <form  onSubmit={handleSubmit} className="bg0 p-t-75 p-b-85 poppins">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -104,13 +177,14 @@ const ShoppingCart = () => {
                                 </div>
                             </div>
                         </div>
-
+                                    {/*  */}
                         <div className="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
                             <div className="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
                                 <h4 className="cl2 p-b-30">
                                     Cart Totals
                                 </h4>
 
+                                
                                 <div className="flex-w flex-t bor12 p-b-13">
                                     <div className="size-208">
                                         <span className="cl2">
@@ -143,20 +217,41 @@ const ShoppingCart = () => {
                                             </span>
 
                                             <div className="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
-                                                <select className="js-select2" name="time">
+                                            <Field as="select" name="catagory_id" className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
+                                                <option value="">Select Category</option>
+                                               
+                                                    <option >Pakistan</option>
+                                                    <option >China</option>
+                                                    <option >USA</option> 
+                                                
+                                                {/* {formik.touched.category && formik.errors.category && <h3>{formik.errors.category}</h3>} */}
+                                                 </Field>
+
+
+
+
+                                                {/* <select className="js-select2" name="country" value={shipping_address.country} onChange={handleOnChange} >
                                                     <option>Select a country...</option>
                                                     <option>USA</option>
                                                     <option>UK</option>
-                                                </select>
+                                                </select> */}
                                                 <div className="dropDownSelect2"></div>
                                             </div>
 
                                             <div className="bor8 bg0 m-b-12">
-                                                <input className="cl8 plh3 size-111 p-lr-15" type="text" name="state" placeholder="State /  country" />
+                                                <input className="cl8 plh3 size-111 p-lr-15" type="text" name="state" value={shipping_address.state} onChange={handleOnChange} placeholder="State" />
                                             </div>
 
                                             <div className="bor8 bg0 m-b-22">
-                                                <input className="cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip" />
+                                                <input className="cl8 plh3 size-111 p-lr-15" type="text" name="city" value={shipping_address.city} onChange={handleOnChange} placeholder="City" />
+                                            </div>
+
+                                            <div className="bor8 bg0 m-b-22">
+                                                <input className="cl8 plh3 size-111 p-lr-15" type="text" name="postal_code" value={shipping_address.postal_code} onChange={handleOnChange} placeholder="Postal code" />
+                                            </div>
+
+                                            <div className="bor8 bg0 m-b-22">
+                                                <input className="cl8 plh3 size-111 p-lr-15" type="text" name="street" value={shipping_address.street} onChange={handleOnChange} placeholder="Street" />
                                             </div>
 
                                             <div className="flex-w">
@@ -181,7 +276,7 @@ const ShoppingCart = () => {
                                     </div>
                                 </div>
 
-                                <button className="flex-c-m cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+                                <button  className="flex-c-m cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
                                     Proceed to Checkout
                                 </button>
                             </div>
@@ -189,6 +284,7 @@ const ShoppingCart = () => {
                     </div>
                 </div>
             </form>
+        </FormikProvider>    
         </div>
     )
 }
