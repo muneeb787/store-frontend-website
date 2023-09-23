@@ -7,6 +7,7 @@ import ShoppingCart from "../pages/shoppingCart/shopingCart";
 
 
 export const PageRoutes = [
+    
     {
         title: "404",
         path: "*",
