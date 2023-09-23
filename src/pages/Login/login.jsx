@@ -1,9 +1,5 @@
 import { FormikProvider, useFormik, Field } from 'formik';
-<<<<<<< HEAD
-// import React, { useEffect } from 'react';
-=======
 import { useEffect } from 'react';
->>>>>>> da63e36149dd7418643e858612f865f915cadff1
 import * as yup from 'Yup'
 import UseAxios from '../../hooks/axios';
 import { toast } from 'react-toastify';
@@ -49,11 +45,6 @@ const Login = () => {
         }
     })
 
-<<<<<<< HEAD
-    // const { touched, errors, values } = formik;
-
-=======
->>>>>>> da63e36149dd7418643e858612f865f915cadff1
 
     return (
         <div>
