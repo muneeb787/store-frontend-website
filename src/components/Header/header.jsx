@@ -3,12 +3,14 @@ import logo from "../../assets/images/icons/logo-01.png"
 import HomeSideBar from "./sidebar";
 import CartMenu from "./cartMenu";
 import { PageRoutes } from "../../routes";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import WishListMenu from "./wishlist";
+
 
 export default function Header() {
   const [dropDown, setDropDown] = useState(true);
   const [text, setText] = useState("Collections");
+  const navigate = useNavigate()
 
   const toggleDropDown = () => {
     setDropDown(!dropDown);
@@ -60,7 +62,7 @@ export default function Header() {
       <HomeSideBar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
       <CartMenu isOpen={isCartOpen} closeCart={closeCart} />
       <WishListMenu isOpen={isWishOpen} closeCart={closeWish} />
-      <div className="bg-white rounded shadow-lg px-10" style={{paddingTop: "2rem" , paddingBottom: "2rem"}}>
+      <div className="bg-white rounded shadow-lg px-10" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
         <nav className="flex justify-between items-center">
           <div className="flex items-center space-x-3 lg:pr-16 pr-4">
             <a href="/" className="logo">
@@ -69,9 +71,9 @@ export default function Header() {
           </div>
           {/* For medium and plus-sized devices */}
           <ul className="hidden md:flex flex-auto space-x-2">
-            {PageRoutes.map((route)=>{
-              if(route.status === true){
-                return(
+            {PageRoutes.map((route) => {
+              if (route.status === true) {
+                return (
                   <Link key={route.path} to={route.path} className="hover:text-indigo-600 cursor-pointer px-2">{route.title}</Link>
                 )
               }
@@ -84,29 +86,40 @@ export default function Header() {
             <Link  className="active-menu hover:text-indigo-600 cursor-pointer px-2" to={"/store"}>Cards</Link> */}
           </ul>
           <div className="wrap-icon-header flex-w flex-r-m h-full">
-						{/* <div className="flex-c-m h-full p-r-24">
+            {/* <div className="flex-c-m h-full p-r-24">
 							<div className="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-modal-search">
 								<i className="zmdi zmdi-search"></i>
 							</div>
 						</div> */}
-							
-						<div className="flex-c-m h-full p-l-18 p-r-25 bor5">
-							<div onClick={openWish} className="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-cart">
-								<i className="zmdi zmdi-favorite"></i>
-							</div>
-						</div>
-						<div className="flex-c-m h-full p-l-18 p-r-25 bor5">
-							<div onClick={openCart} className="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-cart">
-								<i className="zmdi zmdi-shopping-cart"></i>
-							</div>
-						</div>
-							
-						<div className="flex-c-m h-full p-lr-19">
-							<div onClick={openSidebar} className="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-sidebar">
-								<i className="zmdi zmdi-menu"></i>
-							</div>
-						</div>
-					</div>
+
+            <div className="flex-c-m h-full p-l-18 p-r-25 bor5">
+              <div onClick={openWish} className="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-cart">
+                <i className="zmdi zmdi-favorite"></i>
+              </div>
+            </div>
+            <div className="flex-c-m h-full p-l-18 p-r-25 bor5">
+              <div onClick={openCart} className="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-cart">
+                <i className="zmdi zmdi-shopping-cart"></i>
+              </div>
+            </div>
+
+            <div className="flex-c-m h-full p-lr-19">
+              <div onClick={openSidebar} className="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-sidebar">
+                <i className="zmdi zmdi-menu"></i>
+              </div>
+            </div>
+            <div className="flex-c-m h-full p-lr-19">
+              {localStorage.getItem('token') && localStorage.getItem('token') !== "undefined" ? (
+                <button onClick={() => {
+                  localStorage.setItem('token', 'undefined');
+                  navigate('/');
+                }} className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Logout</button>
+              ) : (
+                <button onClick={() => { navigate("/login") }} className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Login/Signup</button>
+              )}
+            </div>
+
+          </div>
           {/* <div className="flex space-x-5 justify-center items-center pl-2">
             <div className="relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
               <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

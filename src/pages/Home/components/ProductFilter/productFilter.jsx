@@ -8,29 +8,51 @@ import useAxios from '../../../../hooks/axios';
 
 
 const ProductList = () => {
-    const axiosInstanse = useAxios()
+    const axiosInstance = useAxios()
 
     const [categories, setCategories] = useState([])
     const [products, setProducts] = useState([])
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
 
     useEffect(() => {
-        axiosInstanse.get(`/products/1/4`).then((res) => {
-            console.log(res.data.products)
-            setProducts(res.data.products)
-        })
-    }, [categories])
+        fetchProducts()
+    }, [selectedCategory])
+
+    const fetchProducts = () => {
+        if (selectedCategory) {
+            console.log("fetch Product _selected category")
+            axiosInstance.get(`/products/${selectedCategory}/1/4`).then((res) => {
+                setProducts(res.data.products)
+            })
+        }
+        else {
+            console.log("fetch Product _else")
+            axiosInstance.get(`/products/1/4`).then((res) => {
+                setProducts(res.data.products)
+            })
+        }
+    }
 
     useEffect(() => {
-        axiosInstanse.get('/category').then((res) => {
+        axiosInstance.get('/category').then((res) => {
             setCategories(res.data)
         })
     }, [])
+
+    const handleCategoryClick = (category) => {
+        // Update the selected category and reset the current page
+        setSelectedCategory(category);
+        fetchProducts()
+    };
 
     return (
         <div className="container mx-auto py-8 text-center">
             <h1 className="text-6xl text-black pt-24 font-extrabold mb-10">Store Overview</h1>
             <FilterCategory
                 categories={categories}
+                handleCat = {handleCategoryClick}
+
             />
             <FilterProducts products={products}/>
         </div>

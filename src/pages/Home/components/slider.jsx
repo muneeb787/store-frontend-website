@@ -3,8 +3,10 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import slider1 from "../../../assets/images/slide-01.jpg";
 import slider2 from "../../../assets/images/slide-02.jpg";
 import slider3 from "../../../assets/images/slide-03.jpg";
+import { useNavigate } from "react-router-dom";
 
 const Slider = () => {
+    const navigate = useNavigate()
     return (
         <div>
             <Carousel
@@ -30,7 +32,7 @@ const Slider = () => {
                                 <h2 className="Poppins font-bold text-8xl cl2 pt-1 pb-4 respon1">New arrivals</h2>
                             </div>
                             <div className="layer-slick1 animated " data-appear="zoomIn" data-delay={1600}>
-                                <button href="product.html" className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                <button onClick={()=>{navigate("/store")}} className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                     Shop Now
                                 </button>
                             </div>
@@ -49,7 +51,7 @@ const Slider = () => {
                                 <h2 className="Poppins font-bold text-8xl cl2 pt-1 pb-4 respon1">New arrivals</h2>
                             </div>
                             <div className="layer-slick1 animated " data-appear="zoomIn" data-delay={1600}>
-                                <button href="product.html" className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                <button onClick={()=>{navigate("/store")}} className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                     Shop Now
                                 </button>
                             </div>
@@ -68,7 +70,7 @@ const Slider = () => {
                                 <h2 className="Poppins font-bold text-8xl cl2 pt-1 pb-4 respon1">New arrivals</h2>
                             </div>
                             <div className="layer-slick1 animated " data-appear="zoomIn" data-delay={1600}>
-                                <button href="product.html" className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                <button onClick={()=>{navigate("/store")}} className="flex-c-m cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                     Shop Now
                                 </button>
                             </div>

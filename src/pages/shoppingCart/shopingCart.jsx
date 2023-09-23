@@ -1,15 +1,16 @@
-import {Field, FormikProvider, useFormik } from "formik";
+// import {Field, Formik, FormikProvider, useFormik } from "formik";
 // import {   FormikProvider } from "formik";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useAxios from "../../hooks/axios";
+import image from "../../assets/images/product-01.jpg"
 
 // import { useNavigate } from "react-router-dom";
 
 const ShoppingCart = () => {
 
     // const {user_id}=req.user;
-    const axiosInstance=useAxios();
+    const axiosInstance = useAxios();
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
@@ -48,39 +49,44 @@ const ShoppingCart = () => {
 
     const [shipping_address, setShipping_address] = useState(
         {
-        country: "",
-        street: "",
-        state:"",
-        city:"",
-        postal_code:""
-      });
+            country: "",
+            street: "",
+            state: "",
+            city: "",
+            postal_code: ""
+        });
 
-      const handleOnChange = (e) =>{ 
-        const name=e.target.name;
-        const value=e.target.value;
 
-        setShipping_address ({...shipping_address, [name]: value})
+
+    const handleOnChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        setShipping_address({ ...shipping_address, [name]: value })
     };
 
-    
     const [records, setRecords] = useState({});
 
-    const handleSubmit= (e) => {
-        e.preventDefault();
-        setRecords("")
-        console.log(shipping_address, "Shipping")
-        setRecords({shipping_address});
-        console.log(records , "record 1");
+    const handleSubmit = () => {
 
-        const products = cartItems.map((elem)=>{
-        return{
-            id: elem.id,
-            Order_Quantity : elem.quantity,
-            total_price : elem.price * elem.quantity
-        }
-    })
-        
-        setRecords({...records , totalPrice})
+        const products = cartItems.map((elem) => {
+            return {
+                product_id: elem.id,
+                Order_Quantity: elem.quantity,
+                total_price: elem.price * elem.quantity,
+
+            }
+        })
+
+        setRecords({
+            ...records,
+            totalPrice: totalPrice,
+            products: products,
+            shipping_address: shipping_address, 
+            transaction_id: "123456432"
+        });
+
+
         // setRecords({...records , products : products})
 
         console.log(records);
@@ -94,25 +100,23 @@ const ShoppingCart = () => {
         // });
 
         axiosInstance.post('/order', records)
-        .then((response) => {
+            .then((response) => {
 
-          console.log('Form submitted successfully:', response.data);
-          toast.success("Product Created successfully");
-        })
-        .catch((error) => {
-          console.error('Error submitting form:', error);
-          toast.error("Error creating product");
-        })
-        .finally(()=>{
-        });
-
-
+                console.log('Form submitted successfully:', response.data);
+                toast.success("Product Created successfully");
+            })
+            .catch((error) => {
+                console.error('Error submitting form:', error);
+                toast.error("Error creating product");
+            })
+            .finally(() => {
+            });
     }
 
     return (
         <div>
-        <FormikProvider>
-            <form  onSubmit={handleSubmit} className="bg0 p-t-75 p-b-85 poppins">
+            {/* <FormikProvider> */}
+            <form className="bg0 p-t-75 p-b-85 poppins">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -121,7 +125,7 @@ const ShoppingCart = () => {
                                     <table className="table-shopping-cart">
                                         <tr className="table_head">
                                             <th className="column-1">Product</th>
-                                            <th className="column-2"></th>
+                                            <th className="column-2"></th>  
                                             <th className="column-3">Price</th>
                                             <th className="column-4">Quantity</th>
                                             <th className="column-5">Total</th>
@@ -134,7 +138,7 @@ const ShoppingCart = () => {
                                                         <tr className="table_row poppins">
                                                             <td className="column-1">
                                                                 <div className="how-itemcart1">
-                                                                    <img src="images/item-cart-04.jpg" alt="IMG" />
+                                                                    <img src={cartItem.image ? `http://localhost:3303/images/${cartItem.image}` : image} alt="IMG" />
                                                                 </div>
                                                             </td>
                                                             <td className="column-2 poppins" >{cartItem.name}</td>
@@ -177,14 +181,14 @@ const ShoppingCart = () => {
                                 </div>
                             </div>
                         </div>
-                                    {/*  */}
+                        {/*  */}
                         <div className="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
                             <div className="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
                                 <h4 className="cl2 p-b-30">
                                     Cart Totals
                                 </h4>
 
-                                
+
                                 <div className="flex-w flex-t bor12 p-b-13">
                                     <div className="size-208">
                                         <span className="cl2">
@@ -217,20 +221,16 @@ const ShoppingCart = () => {
                                             </span>
 
                                             <div className="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
-                                            <Field as="select" name="catagory_id" className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
+                                                {/* <Field as="select" name="catagory_id" className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
                                                 <option value="">Select Category</option>
                                                
                                                     <option >Pakistan</option>
                                                     <option >China</option>
-                                                    <option >USA</option> 
-                                                
+                                                    <option >USA</option> */}
+
                                                 {/* {formik.touched.category && formik.errors.category && <h3>{formik.errors.category}</h3>} */}
-                                                 </Field>
-
-
-
-
-                                                {/* <select className="js-select2" name="country" value={shipping_address.country} onChange={handleOnChange} >
+                                                {/* </Field> */}
+                                                <select className="js-select2" name="country" value={shipping_address.country} onChange={handleOnChange} >
                                                     <option>Select a country...</option>
                                                     <option>USA</option>
                                                     <option>UK</option>
@@ -276,7 +276,7 @@ const ShoppingCart = () => {
                                     </div>
                                 </div>
 
-                                <button  className="flex-c-m cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+                                <button type="button" onClick={handleSubmit} className="flex-c-m cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
                                     Proceed to Checkout
                                 </button>
                             </div>
@@ -284,7 +284,7 @@ const ShoppingCart = () => {
                     </div>
                 </div>
             </form>
-        </FormikProvider>    
+            {/* </FormikProvider>     */}
         </div>
     )
 }

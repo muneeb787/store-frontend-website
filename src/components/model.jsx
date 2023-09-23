@@ -25,6 +25,7 @@ const ProductModel = ({ isOpen, closeModal, product }) => {
             name: product.name,
             price: product.price,
             quantity: quantity,
+            image: product.image
         };
 
         // Add the new item to the cart
@@ -62,7 +63,7 @@ const ProductModel = ({ isOpen, closeModal, product }) => {
                                                     <img
                                                         src={product.image ? `http://localhost:3303/images/${product.image}` : image1}
                                                         alt="IMG-PRODUCT"
-                                                        style={{ maxWidth: "100%" }} // Set a maximum width for the image
+                                                        style={{ maxWidth: "70%" }} // Set a maximum width for the image
                                                     />
                                                 </div>
                                             </div>
@@ -71,7 +72,7 @@ const ProductModel = ({ isOpen, closeModal, product }) => {
                                 </div>
                             </div>
 
-                            <div className="col-md-6 col-lg-5 p-b-30">
+                            <div className="col-md-6 col-lg-5 p-b-30 text-left">
                                 <div className="p-r-50 p-t-5 p-lr-0-lg">
                                     <h4 className="text-3xl cl2 js-name-detail p-b-14">
                                         {product.name}

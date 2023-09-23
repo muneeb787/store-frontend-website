@@ -13,13 +13,14 @@ const ProductStore = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     const fetchProducts = () => {
-        if(selectedCategory)
-        {
+        if (selectedCategory) {
+            console.log("fetch Product _selected category")
             axiosInstance.get(`/products/${selectedCategory}/${currentPage}/12`).then((res) => {
                 setProducts(res.data.products)
             })
         }
-        else{
+        else {
+            console.log("fetch Product _else")
             axiosInstance.get(`/products/${currentPage}/12`).then((res) => {
                 setProducts(res.data.products)
             })
@@ -28,7 +29,7 @@ const ProductStore = () => {
 
     useEffect(() => {
         fetchProducts()
-    }, [categories])
+    }, [selectedCategory])
 
     useEffect(() => {
         axiosInstance.get('/category').then((res) => {
@@ -38,14 +39,12 @@ const ProductStore = () => {
 
     const loadMoreProducts = () => {
         setCurrentPage(currentPage + 1);
-        if(selectedCategory)
-        {
+        if (selectedCategory) {
             axiosInstance.get(`/products/${selectedCategory}/${currentPage}/12`).then((res) => {
                 setProducts((prevProducts) => [...prevProducts, ...res.data.products]);
             })
         }
-        else
-        {
+        else {
             axiosInstance.get(`/products/${currentPage}/12`).then((res) => {
                 setProducts((prevProducts) => [...prevProducts, ...res.data.products]);
             })
@@ -65,6 +64,9 @@ const ProductStore = () => {
                 <div className="container">
                     <div className="flex-w flex-sb-m p-b-52">
                         <div className="flex-w flex-l-m filter-tope-group m-tb-10">
+                            <button onClick={() => handleCategoryClick("")} className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="*">
+                                All
+                            </button>
                             {categories.map((category) => {
                                 return (
                                     <button onClick={() => handleCategoryClick(category._id)} key={category._id} className=" cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="*">
@@ -292,7 +294,7 @@ const ProductStore = () => {
                     <div className="row isotope-grid">
                         <div className="col-sm-6 col-md-4 col-lg-12 p-b-35 isotope-item women">
                             {/* <!-- Block2 --> */}
-                            <FilterProducts products={products}/>
+                            <FilterProducts products={products} />
                         </div>
                     </div>
                     <div className="flex-c-m flex-w w-full p-t-45">
