@@ -74,48 +74,45 @@ const ShoppingCart = () => {
     validationSchema: schema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
 
-        const token = localStorage.getItem("token")
-        if (!token)
-        {
-            navigate("/login"),
-            toast.success("Login Please");
-        }
-        else{
-    
-        const products=cartItems.map((ele)=>{
-            return {
-                product_id:ele.id,
-                Order_Quantity:ele.quantity,
-                total_price:ele.price * ele.quantity,
-            }
+      const token = localStorage.getItem("token")
+      if (!token) {
+        navigate("/login"),
+          toast.success("Login Please");
+      }
+      else {
+        const products = cartItems.map((ele) => {
+          return {
+            product_id: ele.id,
+            Order_Quantity: ele.quantity,
+            total_price: ele.price * ele.quantity,
+          }
         })
 
-        const createOrder={
-            products:products,
-            shipping_address:values,
-            totalPrice:totalPrice
+        const createOrder = {
+          products: products,
+          shipping_address: values,
+          totalPrice: totalPrice
         }
         console.log(createOrder);
-      axiosInstance
-        .post("/order", createOrder)
-        .then((response) => {
-          console.log("Form submitted successfully:", response.data);
-          resetForm();
-          toast.success("Product Created successfully");
-        })
-        .catch((error) => {
-          console.error("Error submitting form:", error);
-          toast.error("Error creating product");
-        })
-        .finally(() => {
-          setSubmitting(false); // Set form to not submitting
-        });
-        
-    localStorage.removeItem("cartItems");
-    toast.success("Happy Shopping");
-    navigate("/store");
-        
-    }
+        axiosInstance
+          .post("/order", createOrder)
+          .then((response) => {
+            console.log("Form submitted successfully:", response.data);
+            resetForm();
+            toast.success("Product Created successfully");
+            localStorage.removeItem("cartItems");
+            toast.success("Happy Shopping");
+            navigate("/store");
+          })
+          .catch((error) => {
+            console.error("Error submitting form:", error);
+            toast.error("Error creating product");
+          })
+          .finally(() => {
+            setSubmitting(false); // Set form to not submitting
+          });
+
+      }
     },
 
   });
