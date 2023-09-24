@@ -52,7 +52,7 @@ const ShoppingCart = () => {
   };
 
   const schema = Yup.object({
-    country: Yup.string().min(3).max(30).required("Required"),
+    country: Yup.string(),
     state: Yup.string().min(3).max(15).required("Required"),
     city: Yup.string().min(3).max(200).required("Required"),
     postal_code: Yup.number()
@@ -73,8 +73,31 @@ const ShoppingCart = () => {
     },
     validationSchema: schema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
+
+        const token = localStorage.getItem("token")
+        if (!token)
+        {
+            navigate("/login"),
+            toast.success("Login Please");
+        }
+        else{
+    
+        const products=cartItems.map((ele)=>{
+            return {
+                product_id:ele.id,
+                Order_Quantity:ele.quantity,
+                total_price:ele.price * ele.quantity,
+            }
+        })
+
+        const createOrder={
+            products:products,
+            shipping_address:values,
+            total_price:totalPrice
+        }
+        console.log(createOrder);
       axiosInstance
-        .post("/order", values)
+        .post("/order", createOrder)
         .then((response) => {
           console.log("Form submitted successfully:", response.data);
           resetForm();
@@ -87,7 +110,14 @@ const ShoppingCart = () => {
         .finally(() => {
           setSubmitting(false); // Set form to not submitting
         });
+        
+    localStorage.removeItem("cartItems");
+    toast.success("Happy Shopping");
+    navigate("/store");
+        
+    }
     },
+
   });
 
   return (
@@ -221,18 +251,18 @@ const ShoppingCart = () => {
                         <div className="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
                           <Field
                             as="select"
-                            name="catagory_id"
+                            name="country"
                             className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                           >
                             <option value="">Select Category</option>
 
-                            <option>Pakistan</option>
-                            <option>China</option>
-                            <option>USA</option>
+                            <option value="pakistan" >Pakistan</option>
+                            <option value="chine">China</option>
+                            <option value="USA">USA</option>
                           </Field>
-                          {formik.touched.catagory_id &&
-                            formik.errors.catagory_id && (
-                              <h3>{formik.errors.catagory_id}</h3>
+                          {formik.touched.country &&
+                            formik.errors.country && (
+                              <h3>{formik.errors.country}</h3>
                             )}
                         </div>
 
