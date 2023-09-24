@@ -93,7 +93,7 @@ const ShoppingCart = () => {
         const createOrder={
             products:products,
             shipping_address:values,
-            total_price:totalPrice
+            totalPrice:totalPrice
         }
         console.log(createOrder);
       axiosInstance
